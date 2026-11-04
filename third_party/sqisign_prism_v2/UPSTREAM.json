@@ -1,0 +1,46 @@
+{
+  "repository": "https://github.com/KULeuven-COSIC/sqisign_prism_v2",
+  "commit": "297ddf1f46fa677e0a2164fbcf51d433e12ccf7d",
+  "files": {
+    "LICENSE": "dc9e066d7aea222692243ae9dbb73823900f8c5b",
+    "ec.py": "8119c903ae6e802c48bb3c971b4f5504a09c3496",
+    "hd.py": "e129725ac37377cc69d47bb9976f689cd8f8284c",
+    "qlapoti.py": "d9b32a1976740d1883caccc9a77de8b028bf674b",
+    "quaternions.py": "1cc8bc9185d4539b4d2805d28417614914235b31",
+    "sos.py": "6786e9fa4ca86faa6efe46c7a6275e6e461e9c34",
+    "theta/LICENSE": "f74476d30574631bea9a4985eaaa16d571c68cc6",
+    "theta/montgomery_isogenies/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "theta/montgomery_isogenies/isogenies_x_only.py": "cdca929d54d7f037309b4ed08b5afba1b45eacbe",
+    "theta/montgomery_isogenies/kummer_isogeny.py": "3a80cebdc827ca5d20812fc50bc39e84cdbb8e16",
+    "theta/montgomery_isogenies/kummer_line.py": "42f3bea75a83a3415b3aa3e2781af1065ed665db",
+    "theta/theta_isogenies/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "theta/theta_isogenies/gluing_isogeny.py": "d19dea91cf3758a4f8be5c420f83936dcc6a1ee4",
+    "theta/theta_isogenies/isogeny.py": "d0eee3cb295e235fa3609f09e48d6a84ff30ae2d",
+    "theta/theta_isogenies/isogeny_sqrt.py": "4a921e5da9641ab4ba61c37303a82682eb1fec9b",
+    "theta/theta_isogenies/isomorphism.py": "611c72cb4435efc12d12318b2547333fb99f4298",
+    "theta/theta_isogenies/morphism.py": "4b7028d8d3b15259d671ea555fef3df5de3dc8af",
+    "theta/theta_isogenies/product_isogeny.py": "a9d6fcf3b72adab1969bb6b9ce59d6e5f6565575",
+    "theta/theta_isogenies/product_isogeny_sqrt.py": "e44dda26ccbdf73ccc56225335a06119d13e8e7b",
+    "theta/theta_structures/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "theta/theta_structures/couple_point.py": "52268ad3e96a49594c645bcb8d11be505d683cd7",
+    "theta/theta_structures/dimension_one.py": "232788a92bab10e1467fe82297a783c8fe45c692",
+    "theta/theta_structures/dimension_two.py": "01151c132b3c025f958f5fbbaec7fe0474fa93ec",
+    "theta/theta_structures/product_structure.py": "1e192aa6dc0e92534500a3a6dc900f75e06aa0a8",
+    "theta/theta_structures/split_structure.py": "5825e154a2313ab85357078861a1789e8e595c40",
+    "theta/utilities/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "theta/utilities/batched_inversion.py": "9bce342c37ac406036fca4db2ebebb0729c9eab7",
+    "theta/utilities/discrete_log.py": "ee78eea6c29ee6570db48cbd594a9e65cc8276cc",
+    "theta/utilities/fast_sqrt.py": "cd1b6bbac5e0dd6db83f93b45afed2e947d67ef8",
+    "theta/utilities/order.py": "c2166c42e398e0696d6cf8cbf89c0c96be99616e",
+    "theta/utilities/polynomial_inversion.py": "25d5016febfabbc678268a9442018781538bc9df",
+    "theta/utilities/strategy.py": "d102b2a8c41628a449c609930024b9cfe10e23a1",
+    "theta/utilities/supersingular.py": "221fa1967db6e6ae9e3811f50d590d6715ab2e6b",
+    "theta/utilities/utils.py": "7921764b85966c145e32fdf22d5047f685bd4276"
+  },
+  "local_modifications": {
+    "theta/montgomery_isogenies/kummer_line.py": {
+      "git_blob": "4f8c672dcb65cb6a297f4c63cd15f3c0c85da23a",
+      "reason": "Add DeuringVUF LadderBiscalar, lift, and y_recovery; existing upstream methods unchanged."
+    }
+  }
+}

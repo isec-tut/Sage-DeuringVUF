@@ -1,0 +1,36 @@
+# Python and SageMath generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.sage/
+*.sage.py
+.coverage
+htmlcov/
+
+# Local environments and credentials
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.aws/
+.ssh/
+*.pem
+*.key
+
+# Local editor and assistant state
+.vscode/
+.idea/
+.agents/
+.codex/
+*.code-workspace
+
+# Local logs and operating system metadata
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+Desktop.ini
