@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if (( $# == 0 )); then
+    echo 'Usage: ./scripts/sage <project-relative-file.py> [arguments...]' >&2
+    exit 1
+fi
+
+root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+file="${1#./}"
+if [[ ! "$file" =~ ^[A-Za-z_][A-Za-z_0-9]*(/[A-Za-z_][A-Za-z_0-9]*)*\.py$ ]]; then
+    echo 'Specify a Python file relative to the project root, e.g. examples/eval.py.' >&2
+    exit 1
+fi
+if [[ ! -f "$root/$file" ]]; then
+    echo "Python file does not exist: $file" >&2
+    exit 1
+fi
+shift
+module="${file%.py}"
+module="${module//\//.}"
+exec "$root/scripts/sage-docker" -python -B -u -m "$module" "$@"
