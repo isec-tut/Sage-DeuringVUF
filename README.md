@@ -36,49 +36,123 @@ the upstream [MIT license](third_party/sqisign_prism_v2/LICENSE) and
 
 ## Execution environment
 
-The full test suite was verified with the following environment:
+The full test suite was verified with SageMath **10.6** and its bundled
+Python **3.12.5**, using the `sagemath/sagemath` Linux Docker image.
+The helpers pin that tested image to:
 
-| Component | Tested version |
-| --- | --- |
-| SageMath | 10.6 |
-| Python (bundled with SageMath) | 3.12.5 |
-| Runtime | Linux container using the `sagemath/sagemath` Docker image on Windows |
+```text
+sagemath/sagemath@sha256:19995db6194f4a4bab18ce9a88556fd15b9ed5e916b4504fefe618a7796ddbdb
+```
 
-Run the protocol, examples, and tests with SageMath's Python interpreter via
-`sage -python`. A standalone Python installation does not provide the required
-`sage` modules. The arithmetic dependencies are included in `third_party/`;
-no separate checkout of SQIsign or the theta library is needed.
+Docker supplies SageMath and Python; no separate host installation is required.
+The arithmetic dependencies are included in `third_party/`, so no separate
+checkout of SQIsign or the theta library is needed.
 
-With SageMath installed, check the interpreter versions with:
+### How the helpers work
+
+Specify Python files relative to the project root and append any program
+arguments. Windows accepts both `/` and `\` in file paths. Each command starts
+a temporary container, executes the file as a Python module, and removes the
+container on exit. No separate SageMath startup is needed.
+
+The first run downloads the image; later runs reuse it. The project is mounted
+read-only, and Python bytecode writes are disabled. Host Python and SageMath
+installations are independent of this environment.
+
+### Using a local SageMath installation
+
+If SageMath is already installed, check its versions with `sage --version` and
+`sage -python --version`. Use SageMath's Python interpreter to run modules:
 
 ```sh
-sage --version
-sage -python --version
+sage -python -m examples.eval
+sage -python -m tests.run_all
+sage -python -m benchmarks.benchmark_vuf --trials 3 --seed 0
 ```
 
-Alternatively, use Docker. The image used for the full test run was
-`sagemath/sagemath@sha256:19995db6194f4a4bab18ce9a88556fd15b9ed5e916b4504fefe618a7796ddbdb`.
-The digest fixes the tested image rather than following the changing `latest` tag.
-From the repository root, run the tests in PowerShell with:
-
-```powershell
-$sageImage = 'sagemath/sagemath@sha256:19995db6194f4a4bab18ce9a88556fd15b9ed5e916b4504fefe618a7796ddbdb'
-docker run --rm --mount "type=bind,source=$($PWD.Path),target=/work,readonly" -w /work $sageImage sage -python -B -u -m tests.run_all
-```
-
-Docker must be running with Linux containers enabled. The source directory is
-mounted read-only, and `-B` disables Python bytecode writes. To run an example
-instead, replace `tests.run_all` with, for example, `examples.eval`.
+A standalone Python interpreter does not provide the required `sage` modules.
 
 ## Running the code
 
-Run the following commands from the repository root in the SageMath environment.
+Choose your operating system below. All file paths are relative to the project
+root (the folder containing this README).
 
-Run all tests with:
+### Windows (PowerShell)
+
+Start Docker Desktop with Linux containers enabled and wait until it is ready.
+Open PowerShell in the project root, then check the Docker connection:
+
+```powershell
+docker info
+```
+
+Run all tests:
+
+```powershell
+.\scripts\sage.ps1 tests/run_all.py
+```
+
+Run a demo (key generation, evaluation, or verification):
+
+```powershell
+.\scripts\sage.ps1 examples/keygen.py
+.\scripts\sage.ps1 examples/eval.py
+.\scripts\sage.ps1 examples/verify.py
+```
+
+Run a short benchmark, a longer benchmark, or a run with RNG-state replay:
+
+```powershell
+.\scripts\sage.ps1 benchmarks/benchmark_vuf.py --trials 3 --seed 0
+.\scripts\sage.ps1 benchmarks/benchmark_vuf.py --trials 100 --seed 0
+.\scripts\sage.ps1 benchmarks/benchmark_vuf.py --trials 100 --seed 0 --rng-state
+```
+
+### Linux (Bash)
+
+Start Docker before running commands. If using Docker Desktop, open it from
+the application menu or run:
 
 ```sh
-sage -python -m tests.run_all
+systemctl --user start docker-desktop
+docker --context desktop-linux info
 ```
+
+The helpers select the `desktop-linux` context when available. To use Docker
+Engine or another context, prefix commands with `SAGE_DOCKER_CONTEXT=default`
+(or another context name).
+
+Run all tests from the project root:
+
+```sh
+./scripts/sage tests/run_all.py
+```
+
+Run a demo (key generation, evaluation, or verification):
+
+```sh
+./scripts/sage examples/keygen.py
+./scripts/sage examples/eval.py
+./scripts/sage examples/verify.py
+```
+
+Run a short benchmark, a longer benchmark, or a run with RNG-state replay:
+
+```sh
+./scripts/sage benchmarks/benchmark_vuf.py --trials 3 --seed 0
+./scripts/sage benchmarks/benchmark_vuf.py --trials 100 --seed 0
+./scripts/sage benchmarks/benchmark_vuf.py --trials 100 --seed 0 --rng-state
+```
+
+For an interactive SageMath session or interpreter version checks:
+
+```sh
+./scripts/sage-docker
+./scripts/sage-docker --version
+./scripts/sage-docker -python --version
+```
+
+### Test behavior
 
 The runner discovers `tests/test_*.py` and runs each module in a fresh Python
 process using the same interpreter. It streams test output, continues after
@@ -91,15 +165,7 @@ checks the fork's integrity and module connections, `test_backend.py` checks
 arithmetic conventions and IdealToIsogeny images, and `test_protocol.py`
 checks key generation, ordinary/amortized evaluation, and verification.
 
-### Examples
-
-Run the key generation, evaluation, and verification demos with:
-
-```sh
-sage -python -m examples.keygen
-sage -python -m examples.eval
-sage -python -m examples.verify
-```
+### Demo output
 
 Each demo generates its own key pair. The key generation demo prints serialized
 keys in hexadecimal alongside the decoded curve, ideal, and basis information.
@@ -107,21 +173,10 @@ The evaluation demo prints the input, serialized output and proof in hexadecimal
 the decoded output j-invariant and proof curve, basis matrix, and hint, and
 evaluation time excluding key generation and display decoding.
 
-### Benchmarks
+### Benchmark options and results
 
-Run the protocol benchmark with a short trial count:
-
-```sh
-sage -python -m benchmarks.benchmark_vuf --trials 3 --seed 0
-```
-
-For a longer run, or to replay the saved Python RNG state during amortized
-evaluation:
-
-```sh
-sage -python -m benchmarks.benchmark_vuf --trials 100 --seed 0
-sage -python -m benchmarks.benchmark_vuf --trials 100 --seed 0 --rng-state
-```
+Start with 3 trials. `--trials 100` runs a longer benchmark; `--rng-state`
+replays each ordinary Eval's saved Python RNG state during amortized evaluation.
 
 | Argument | Default | Meaning |
 | --- | --- | --- |
@@ -327,6 +382,7 @@ reported sizes from the exact byte lengths of this implementation. The returned
 | `benchmarks/` | Protocol timing benchmark |
 | `examples/` | Key generation, evaluation, and verification demos |
 | `docs/` | Encoding specifications and implementation notes |
+| `scripts/` | Windows and Linux helpers for the pinned Docker environment |
 
 The internal Qlapoti torsion exponent `f` (240 for `original`) is distinct from
 the proof exponent `REPRESENTATION_EXPONENT = N.nbits()`. The auxiliary ideal
